@@ -3,3 +3,4 @@ Python >= 3.6.
 tensorboardX
 cupy
 sklearn
+vessl[media]
