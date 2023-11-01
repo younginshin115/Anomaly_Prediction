@@ -82,7 +82,7 @@ class Label_loader:
         self.cfg = cfg
         self.name = cfg.dataset
         self.frame_path = cfg.test_data
-        self.mat_path = f'{cfg.data_root + self.name}/{self.name}.mat'
+        self.mat_path = f'{cfg.data_root + self.name/ +self.name}/{self.name}.mat'
         self.video_folders = video_folders
 
     def __call__(self):

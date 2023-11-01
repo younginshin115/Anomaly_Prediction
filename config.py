@@ -13,7 +13,7 @@ if not os.path.exists('results'):
 share_config = {'mode': 'training',
                 'dataset': 'avenue',
                 'img_size': (256, 256),
-                'data_root': '/home/feiyu/Data/'}  # remember the final '/'
+                'data_root': '/input/2302-AI-LEC-ANO/group-d-'}  # remember the final '/'
 
 
 class dict2class:
