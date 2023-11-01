@@ -131,7 +131,6 @@ def val(cfg, model=None):
                 temp = end
                 print(f'\rDetecting: [{i + 1:02d}] {j + 1}/{len(dataset)}, {fps:.2f} fps.', end='')
 
-            print(psnrs)
             psnr_group.append(np.array(psnrs))
 
             if not model:
@@ -151,6 +150,7 @@ def val(cfg, model=None):
     scores = np.array([], dtype=np.float32)
     labels = np.array([], dtype=np.int8)
     for i in range(len(psnr_group)):
+        if len(i) == 0: continue
         distance = psnr_group[i]
         distance -= min(distance)  # distance = (distance - min) / (max - min)
         distance /= max(distance)
