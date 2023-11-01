@@ -17,6 +17,10 @@ from models.liteFlownet import lite_flownet as lite_flow
 from config import update_config
 from models.flownet2.models import FlowNet2SD
 from evaluate import val
+import vessl
+
+vessl.init()
+
 
 parser = argparse.ArgumentParser(description='Anomaly Prediction')
 parser.add_argument('--batch_size', default=8, type=int)
@@ -175,6 +179,21 @@ try:
                     print(f"[{step}]  inte_l: {inte_l:.3f} | grad_l: {grad_l:.3f} | fl_l: {fl_l:.3f} | "
                           f"g_l: {g_l:.3f} | G_l_total: {G_l_t:.3f} | D_l: {D_l:.3f} | psnr: {psnr:.3f} | "
                           f"iter: {iter_t:.3f}s | ETA: {eta} | lr: {lr_g} {lr_d}")
+                    
+                    vessl.log(payload={
+                        "step": step,
+                        "intel_1": inte_l,
+                        "grad_1": grad_l,
+                        "fl_l": fl_l,
+                        "g_l": g_l,
+                        "G_l_total": G_l_t,
+                        "D_l": D_l,
+                        "psnr": psnr,
+                        "iter": iter_t,
+                        "eta": eta,
+                        "lr_g": lr_g,
+                        "lr_d": lr_d
+                    })
 
                     save_G_frame = ((G_frame[0] + 1) / 2)
                     save_G_frame = save_G_frame.cpu().detach()[(2, 1, 0), ...]
