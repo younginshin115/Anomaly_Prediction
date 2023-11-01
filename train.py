@@ -19,8 +19,6 @@ from models.flownet2.models import FlowNet2SD
 from evaluate import val
 import vessl
 
-vessl.init()
-
 
 parser = argparse.ArgumentParser(description='Anomaly Prediction')
 parser.add_argument('--batch_size', default=8, type=int)
@@ -77,6 +75,7 @@ train_dataset = Dataset.train_dataset(train_cfg)
 train_dataloader = DataLoader(dataset=train_dataset, batch_size=train_cfg.batch_size,
                               shuffle=True, num_workers=4, drop_last=True)
 
+vessl.init(tensorboard=True)
 writer = SummaryWriter(f'tensorboard_log/{train_cfg.dataset}_bs{train_cfg.batch_size}')
 start_iter = int(train_cfg.resume.split('_')[-1].split('.')[0]) if train_cfg.resume else 0
 training = True
@@ -180,20 +179,24 @@ try:
                           f"g_l: {g_l:.3f} | G_l_total: {G_l_t:.3f} | D_l: {D_l:.3f} | psnr: {psnr:.3f} | "
                           f"iter: {iter_t:.3f}s | ETA: {eta} | lr: {lr_g} {lr_d}")
                     
-                    vessl.log(payload={
-                        "step": step,
-                        "intel_1": inte_l,
-                        "grad_1": grad_l,
-                        "fl_l": fl_l,
-                        "g_l": g_l,
-                        "G_l_total": G_l_t,
-                        "D_l": D_l,
-                        "psnr": psnr,
-                        "iter": iter_t,
-                        "eta": eta,
-                        "lr_g": lr_g,
-                        "lr_d": lr_d
-                    })
+                    vessl.log(
+                        step=step,
+                        payload={'loss':G_l_t}
+                        # payload={
+                        # "step": step,
+                        # "intel_1": inte_l,
+                        # "grad_1": grad_l,
+                        # "fl_l": fl_l,
+                        # "g_l": g_l,
+                        # "G_l_total": G_l_t,
+                        # "D_l": D_l,
+                        # "psnr": psnr,
+                        # "iter": iter_t,
+                        # "eta": eta,
+                        # "lr_g": lr_g,
+                        # "lr_d": lr_d
+                        # }
+                    )
 
                     save_G_frame = ((G_frame[0] + 1) / 2)
                     save_G_frame = save_G_frame.cpu().detach()[(2, 1, 0), ...]
