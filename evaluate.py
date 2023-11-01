@@ -150,8 +150,8 @@ def val(cfg, model=None):
     scores = np.array([], dtype=np.float32)
     labels = np.array([], dtype=np.int8)
     for i in range(len(psnr_group)):
-        if len(i) == 0: continue
         distance = psnr_group[i]
+        if len(distance) == 0: continue
         distance -= min(distance)  # distance = (distance - min) / (max - min)
         distance /= max(distance)
 
