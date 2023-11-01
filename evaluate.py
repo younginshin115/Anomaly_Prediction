@@ -131,6 +131,7 @@ def val(cfg, model=None):
                 temp = end
                 print(f'\rDetecting: [{i + 1:02d}] {j + 1}/{len(dataset)}, {fps:.2f} fps.', end='')
 
+            print(psnrs)
             psnr_group.append(np.array(psnrs))
 
             if not model:
