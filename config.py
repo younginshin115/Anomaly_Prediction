@@ -13,7 +13,7 @@ if not os.path.exists('results'):
 share_config = {'mode': 'training',
                 'dataset': 'avenue',
                 'img_size': (256, 256),
-                'data_root': '/input/2302-AI-LEC-ANO/group-d-'}  # remember the final '/'
+                'data_root': '/input/'}  # remember the final '/'
 
 
 class dict2class:
@@ -35,8 +35,8 @@ def update_config(args=None, mode=None):
 
     if mode == 'train':
         share_config['batch_size'] = args.batch_size
-        share_config['train_data'] = share_config['data_root'] + args.dataset + '/' + args.dataset + '/training/'
-        share_config['test_data'] = share_config['data_root'] + args.dataset + '/' + args.dataset + '/testing/'
+        share_config['train_data'] = share_config['data_root'] + args.dataset + '/training/'
+        share_config['test_data'] = share_config['data_root'] + args.dataset + '/testing/'
         share_config['g_lr'] = 0.0002
         share_config['d_lr'] = 0.00002
         share_config['resume'] = glob(f'weights/{args.resume}*')[0] if args.resume else None
@@ -47,7 +47,7 @@ def update_config(args=None, mode=None):
         share_config['flownet'] = args.flownet
 
     elif mode == 'test':
-        share_config['test_data'] = share_config['data_root'] + args.dataset + '/' + args.dataset + '/testing/'
+        share_config['test_data'] = share_config['data_root'] + args.dataset + '/testing/'
         share_config['trained_model'] = args.trained_model
         share_config['show_curve'] = args.show_curve
         share_config['show_heatmap'] = args.show_heatmap
