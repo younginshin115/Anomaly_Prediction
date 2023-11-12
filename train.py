@@ -39,10 +39,10 @@ args = parser.parse_args()
 train_cfg = update_config(args, mode='train')
 train_cfg.print_cfg()
 
-if train_cfg.generator == 'unet':
-    generator = UNet(input_channels=12, output_channel=3).cuda()
-else:
+if train_cfg.generator == 'transanormaly':
     generator = TransAnomaly(batch_size=4, num_frames=4).cuda()
+else:
+    generator = UNet(input_channels=12, output_channel=3).cuda()
 discriminator = PixelDiscriminator(input_nc=3).cuda()
 optimizer_G = torch.optim.Adam(generator.parameters(), lr=train_cfg.g_lr)
 optimizer_D = torch.optim.Adam(discriminator.parameters(), lr=train_cfg.d_lr)
