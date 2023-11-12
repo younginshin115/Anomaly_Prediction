@@ -40,7 +40,7 @@ train_cfg = update_config(args, mode='train')
 train_cfg.print_cfg()
 
 if train_cfg.generator == 'transanormaly':
-    generator = TransAnomaly(batch_size=4, num_frames=4).cuda()
+    generator = TransAnomaly(batch_size=train_cfg.batch_size, num_frames=8).cuda()
 else:
     generator = UNet(input_channels=12, output_channel=3).cuda()
 discriminator = PixelDiscriminator(input_nc=3).cuda()
