@@ -45,6 +45,7 @@ def update_config(args=None, mode=None):
         share_config['save_interval'] = args.save_interval
         share_config['val_interval'] = args.val_interval
         share_config['flownet'] = args.flownet
+        share_config['generator'] = args.generator
 
     elif mode == 'test':
         share_config['test_data'] = share_config['data_root'] + args.dataset + '/testing/'

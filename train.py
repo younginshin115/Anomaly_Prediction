@@ -14,6 +14,7 @@ import Dataset
 from models.unet import UNet
 from models.pix2pix_networks import PixelDiscriminator
 from models.liteFlownet import lite_flownet as lite_flow
+from models.transanomaly import TransAnomaly
 from config import update_config
 from models.flownet2.models import FlowNet2SD
 from evaluate import val
@@ -32,12 +33,16 @@ parser.add_argument('--val_interval', default=1000, type=int,
 parser.add_argument('--show_flow', default=False, action='store_true',
                     help='If True, the first batch of ground truth optic flow could be visualized and saved.')
 parser.add_argument('--flownet', default='lite', type=str, help='lite: LiteFlownet, 2sd: FlowNet2SD.')
+parser.add_argument('--generator', default='unet', type=str, help='The name of the model that will be used as a generator')
 
 args = parser.parse_args()
 train_cfg = update_config(args, mode='train')
 train_cfg.print_cfg()
 
-generator = UNet(input_channels=12, output_channel=3).cuda()
+if train_cfg.generator == 'unet':
+    generator = UNet(input_channels=12, output_channel=3).cuda()
+else:
+    generator = TransAnomaly(batch_size=4, num_frames=4).cuda()
 discriminator = PixelDiscriminator(input_nc=3).cuda()
 optimizer_G = torch.optim.Adam(generator.parameters(), lr=train_cfg.g_lr)
 optimizer_D = torch.optim.Adam(discriminator.parameters(), lr=train_cfg.d_lr)

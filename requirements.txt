@@ -1,3 +1,4 @@
 tensorboardX
 cupy-cuda12x
 scikit-learn
+einops
