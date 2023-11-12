@@ -40,7 +40,7 @@ train_cfg = update_config(args, mode='train')
 train_cfg.print_cfg()
 
 if train_cfg.generator == 'transanormaly':
-    generator = TransAnomaly(batch_size=train_cfg.batch_size, num_frames=8).cuda()
+    generator = TransAnomaly(batch_size=train_cfg.batch_size, num_frames=4).cuda()
 else:
     generator = UNet(input_channels=12, output_channel=3).cuda()
 discriminator = PixelDiscriminator(input_nc=3).cuda()
@@ -101,8 +101,10 @@ try:
                 if len(train_dataset.all_seqs[index]) == 0:
                     train_dataset.all_seqs[index] = list(range(len(train_dataset.videos[index]) - 4))
                     random.shuffle(train_dataset.all_seqs[index])
-
-            G_frame = generator(input_frames)
+            if train_cfg.generator == 'transanormaly':
+                G_frame = generator([generator.batch_size, generator.num_frames] + input_frames)
+            else:
+                G_frame = generator(input_frames)
 
             if train_cfg.flownet == 'lite':
                 gt_flow_input = torch.cat([input_last, target_frame], 1)
