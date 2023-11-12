@@ -101,10 +101,8 @@ try:
                 if len(train_dataset.all_seqs[index]) == 0:
                     train_dataset.all_seqs[index] = list(range(len(train_dataset.videos[index]) - 4))
                     random.shuffle(train_dataset.all_seqs[index])
-            if train_cfg.generator == 'transanormaly':
-                G_frame = generator([generator.batch_size, generator.num_frames] + input_frames)
-            else:
-                G_frame = generator(input_frames)
+
+            G_frame = generator(input_frames)
 
             if train_cfg.flownet == 'lite':
                 gt_flow_input = torch.cat([input_last, target_frame], 1)
