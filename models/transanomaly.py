@@ -71,9 +71,9 @@ class TransAnomaly(nn.Module):
 
         #트릭 사용. conv2d를 쓰기 때문에 차원수 줄여야함 -> batch와 frames(t) 차원 합침. / 이미지 컨볼루전은 각 프레임별로 이루어지므로 가능.
         #이제 unet encoder에서 (b * t)를 배치로 취급해서 인코딩 진행.
-        tmp_frames = rearrange(frames, 'b t c h w -> (b t) c h w')
-        print(tmp_frames.shape)
-        contracting_11_out = self.contracting_11(tmp_frames) # [-1, 64, 256, 256]
+        # tmp_frames = rearrange(frames, 'b t c h w -> (b t) c h w')
+        print(frames.shape)
+        contracting_11_out = self.contracting_11(frames) # [-1, 64, 256, 256]
         contracting_12_out = self.contracting_12(contracting_11_out) # pooling : [-1, 64, 128, 128]
         contracting_21_out = self.contracting_21(contracting_12_out) # [-1, 128, 128, 128]
         contracting_22_out = self.contracting_22(contracting_21_out) # [-1, 128, 64, 64]
