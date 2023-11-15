@@ -88,7 +88,12 @@ def val(cfg, model=None):
                 input_frames = torch.from_numpy(input_np).unsqueeze(0).cuda()
                 target_frame = torch.from_numpy(target_np).unsqueeze(0).cuda()
 
-                G_frame = generator(input_frames)
+                if cfg.generator == 'transanormaly':
+                    new_input_frames = input_frames.reshape(cfg.batch_size, 4, 3, 256, 256)
+                    G_frame = generator(new_input_frames)
+                else:
+                    G_frame = generator(input_frames)
+
                 test_psnr = psnr_error(G_frame, target_frame).cpu().detach().numpy()
                 psnrs.append(float(test_psnr))
 
