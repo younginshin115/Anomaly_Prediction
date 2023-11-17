@@ -89,7 +89,7 @@ def val(cfg, model=None):
                 target_frame = torch.from_numpy(target_np).unsqueeze(0).cuda()
 
                 if cfg.generator == 'transanormaly':
-                    new_input_frames = input_frames.reshape(1, 4, 3, 256, 256)
+                    new_input_frames = input_frames.view(1, 12, 3, 256, 256)
                     G_frame = generator(new_input_frames)
                 else:
                     G_frame = generator(input_frames)
