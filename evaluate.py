@@ -14,6 +14,8 @@ from Dataset import Label_loader
 from utils import psnr_error
 import Dataset
 from models.unet import UNet
+from models.transanomaly import TransAnomaly
+
 
 parser = argparse.ArgumentParser(description='Anomaly Prediction')
 parser.add_argument('--dataset', default='avenue', type=str, help='The name of the dataset to train.')
@@ -27,6 +29,8 @@ parser.add_argument('--show_heatmap', action='store_true',
 def val(cfg, model=None):
     if model:  # This is for testing during training.
         generator = model
+        if cfg.generator == 'transanormaly':
+            generator = TransAnomaly(batch_size=cfg.batch_size, num_frames=1).cuda()
         generator.eval()
     else:
         generator = UNet(input_channels=12, output_channel=3).cuda().eval()
@@ -93,7 +97,7 @@ def val(cfg, model=None):
                 target_frame = torch.from_numpy(target_np).unsqueeze(0).cuda()
 
                 if cfg.generator == 'transanormaly':
-                    new_input_frames = input_frames.view(4, 12, 3, 256, 256)
+                    new_input_frames = input_frames.reshape(cfg.batch_size, 1, 3, 256, 256)
                     G_frame = generator(new_input_frames)
                 else:
                     G_frame = generator(input_frames)
