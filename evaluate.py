@@ -74,8 +74,11 @@ def val(cfg, model=None):
                 fourcc = cv2.VideoWriter_fourcc('X', 'V', 'I', 'D')
 
                 if cfg.show_curve:
-                    video_writer = cv2.VideoWriter(f'results/{name}_video.avi', fourcc, 30, cfg.img_size)
-                    curve_writer = cv2.VideoWriter(f'results/{name}_curve.avi', fourcc, 30, (600, 430))
+                    if not os.path.exists('/output/results'):
+                        print(f" [*] Make directories : /output/results")
+                        os.makedirs('/output/results')
+                    video_writer = cv2.VideoWriter(f'/output/results/{name}_video.avi', fourcc, 30, cfg.img_size)
+                    curve_writer = cv2.VideoWriter(f'/output/results/{name}_curve.avi', fourcc, 30, (600, 430))
 
                     js = []
                     plt.clf()
@@ -83,7 +86,7 @@ def val(cfg, model=None):
                     line, = ax.plot([], [], '-b')
 
                 if cfg.show_heatmap:
-                    heatmap_writer = cv2.VideoWriter(f'results/{name}_heatmap.avi', fourcc, 30, cfg.img_size)
+                    heatmap_writer = cv2.VideoWriter(f'/output/results/{name}_heatmap.avi', fourcc, 30, cfg.img_size)
 
             psnrs = []
             for j, clip in enumerate(dataset):
