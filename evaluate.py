@@ -8,7 +8,7 @@ from PIL import Image
 import io
 from sklearn import metrics
 import matplotlib
-matplotlib.use("Qt5Agg")
+matplotlib.use("TkAgg")
 import matplotlib.pyplot as plt
 
 from config import update_config
@@ -52,7 +52,10 @@ def val(cfg, model=None):
         if cfg.show_curve:
             fig = plt.figure("Image")
             manager = plt.get_current_fig_manager()
-            manager.window.setGeometry(550, 200, 600, 500)
+            if backend == 'TkAgg':
+                manager.window.wm_geometry("550x200+600+500")
+            else:
+                manager.window.setGeometry(550, 200, 600, 500)
             # This works for QT backend, for other backends, check this ⬃⬃⬃.
             # https://stackoverflow.com/questions/7449585/how-do-you-set-the-absolute-position-of-figure-windows-with-matplotlib
             plt.xlabel('frames')
