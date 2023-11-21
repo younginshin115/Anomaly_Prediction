@@ -7,8 +7,6 @@ import cv2
 from PIL import Image
 import io
 from sklearn import metrics
-import matplotlib
-matplotlib.use("TkAgg")
 import matplotlib.pyplot as plt
 
 from config import update_config
@@ -26,9 +24,6 @@ parser.add_argument('--show_curve', action='store_true',
                     help='Show and save the psnr curve real-timely, this drops fps.')
 parser.add_argument('--show_heatmap', action='store_true',
                     help='Show and save the difference heatmap real-timely, this drops fps.')
-
-backend = matplotlib.get_backend()
-print('matplotlib backend', backend)
 
 def val(cfg, model=None):
     if model:  # This is for testing during training.
@@ -51,11 +46,8 @@ def val(cfg, model=None):
     if not model:
         if cfg.show_curve:
             fig = plt.figure("Image")
-            manager = plt.get_current_fig_manager()
-            if backend == 'TkAgg':
-                manager.window.wm_geometry("550x200+600+500")
-            else:
-                manager.window.setGeometry(550, 200, 600, 500)
+            # manager = plt.get_current_fig_manager()
+            # manager.window.setGeometry(550, 200, 600, 500)
             # This works for QT backend, for other backends, check this ⬃⬃⬃.
             # https://stackoverflow.com/questions/7449585/how-do-you-set-the-absolute-position-of-figure-windows-with-matplotlib
             plt.xlabel('frames')
