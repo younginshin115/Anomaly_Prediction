@@ -26,7 +26,8 @@ parser.add_argument('--show_curve', action='store_true',
 parser.add_argument('--show_heatmap', action='store_true',
                     help='Show and save the difference heatmap real-timely, this drops fps.')
 
-matplotlib.use("Qt5Agg")
+backend = matplotlib.get_backend()
+print('matplotlib backend', backend)
 
 def val(cfg, model=None):
     if model:  # This is for testing during training.
@@ -79,6 +80,7 @@ def val(cfg, model=None):
                     if not os.path.exists('/output/results'):
                         print(f" [*] Make directories : /output/results")
                         os.makedirs('/output/results')
+                             
                     video_writer = cv2.VideoWriter(f'/output/results/{name}_video.avi', fourcc, 30, cfg.img_size)
                     curve_writer = cv2.VideoWriter(f'/output/results/{name}_curve.avi', fourcc, 30, (600, 430))
 
