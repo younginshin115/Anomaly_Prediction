@@ -8,6 +8,7 @@ from PIL import Image
 import io
 from sklearn import metrics
 import matplotlib
+matplotlib.use("Qt5Agg")
 import matplotlib.pyplot as plt
 
 from config import update_config
