@@ -46,6 +46,7 @@ def val(cfg, model=None):
 
     if not model:
         if cfg.show_curve:
+            plt.use("Qt5Agg")
             fig = plt.figure("Image")
             manager = plt.get_current_fig_manager()
             manager.window.setGeometry(550, 200, 600, 500)
