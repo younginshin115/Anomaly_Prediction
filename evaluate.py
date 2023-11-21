@@ -55,13 +55,13 @@ def val(cfg, model=None):
             plt.title('psnr curve')
             plt.grid(ls='--')
 
-            cv2.namedWindow('target frames', cv2.WINDOW_NULL)
+            cv2.namedWindow('target frames', cv2.WINDOW_GUI_NORMAL)
             # cv2.namedWindow('target frames', cv2.WINDOW_NORMAL)
             cv2.resizeWindow('target frames', 384, 384)
             cv2.moveWindow("target frames", 100, 100)
 
         if cfg.show_heatmap:
-            cv2.namedWindow('difference map', cv2.WINDOW_NULL)
+            cv2.namedWindow('difference map', cv2.WINDOW_GUI_NORMAL)
             # cv2.namedWindow('difference map', cv2.WINDOW_NORMAL)
             cv2.resizeWindow('difference map', 384, 384)
             cv2.moveWindow('difference map', 100, 550)
