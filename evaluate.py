@@ -7,6 +7,7 @@ import cv2
 from PIL import Image
 import io
 from sklearn import metrics
+import matplotlib
 import matplotlib.pyplot as plt
 
 from config import update_config
@@ -25,6 +26,7 @@ parser.add_argument('--show_curve', action='store_true',
 parser.add_argument('--show_heatmap', action='store_true',
                     help='Show and save the difference heatmap real-timely, this drops fps.')
 
+matplotlib.use("Qt5Agg")
 
 def val(cfg, model=None):
     if model:  # This is for testing during training.
@@ -46,7 +48,6 @@ def val(cfg, model=None):
 
     if not model:
         if cfg.show_curve:
-            plt.use("Qt5Agg")
             fig = plt.figure("Image")
             manager = plt.get_current_fig_manager()
             manager.window.setGeometry(550, 200, 600, 500)
