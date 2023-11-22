@@ -46,23 +46,23 @@ def val(cfg, model=None):
     if not model:
         if cfg.show_curve:
             fig = plt.figure("Image")
-            # manager = plt.get_current_fig_manager()
-            # manager.window.setGeometry(550, 200, 600, 500)
-            # This works for QT backend, for other backends, check this ⬃⬃⬃.
-            # https://stackoverflow.com/questions/7449585/how-do-you-set-the-absolute-position-of-figure-windows-with-matplotlib
+    #         # manager = plt.get_current_fig_manager()
+    #         # manager.window.setGeometry(550, 200, 600, 500)
+    #         # This works for QT backend, for other backends, check this ⬃⬃⬃.
+    #         # https://stackoverflow.com/questions/7449585/how-do-you-set-the-absolute-position-of-figure-windows-with-matplotlib
             plt.xlabel('frames')
             plt.ylabel('psnr')
             plt.title('psnr curve')
             plt.grid(ls='--')
 
-            cv2.namedWindow('target frames', cv2.WINDOW_NORMAL)
-            cv2.resizeWindow('target frames', 384, 384)
-            cv2.moveWindow("target frames", 100, 100)
+    #         cv2.namedWindow('target frames', cv2.WINDOW_NORMAL)
+    #         cv2.resizeWindow('target frames', 384, 384)
+    #         cv2.moveWindow("target frames", 100, 100)
 
-        if cfg.show_heatmap:
-            cv2.namedWindow('difference map', cv2.WINDOW_NORMAL)
-            cv2.resizeWindow('difference map', 384, 384)
-            cv2.moveWindow('difference map', 100, 550)
+    #     if cfg.show_heatmap:
+    #         cv2.namedWindow('difference map', cv2.WINDOW_NORMAL)
+    #         cv2.resizeWindow('difference map', 384, 384)
+    #         cv2.moveWindow('difference map', 100, 550)
 
     with torch.no_grad():
         for i, folder in enumerate(video_folders):
@@ -116,8 +116,8 @@ def val(cfg, model=None):
                         line.set_ydata(psnrs)  # which is faster, but still not perfect.
                         plt.pause(0.001)  # show curve
 
-                        cv2.imshow('target frames', cv2_frame)
-                        cv2.waitKey(1)  # show video
+                        # cv2.imshow('target frames', cv2_frame)
+                        # cv2.waitKey(1)  # show video
 
                         video_writer.write(cv2_frame)  # Write original video frames.
 
@@ -135,8 +135,8 @@ def val(cfg, model=None):
                         diff_map = diff_map.cpu().detach().numpy().astype('uint8')
                         heat_map = cv2.applyColorMap(diff_map, cv2.COLORMAP_JET)
 
-                        cv2.imshow('difference map', heat_map)
-                        cv2.waitKey(1)
+                        # cv2.imshow('difference map', heat_map)
+                        # cv2.waitKey(1)
 
                         heatmap_writer.write(heat_map)  # Write heatmap frames.
 
