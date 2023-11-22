@@ -83,6 +83,7 @@ def val(cfg, model=None):
 
                     js = []
                     plt.clf()
+                    print(dataset, len(dataset))
                     ax = plt.axes(xlim=(0, len(dataset)), ylim=(30, 45))
                     line, = ax.plot([], [], '-b')
 
