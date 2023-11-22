@@ -74,20 +74,26 @@ def val(cfg, model=None):
                 fourcc = cv2.VideoWriter_fourcc('X', 'V', 'I', 'D')
 
                 if cfg.show_curve:
-                    if not os.path.exists('/output/weights'):
-                        print(f" [*] Make directories : /output/weights")
-                        os.makedirs('/output/weights')
+                    if not os.path.exists('/output/videos'):
+                        print(f" [*] Make directories : /output/videos")
+                        os.makedirs('/output/videos')
                              
-                    video_writer = cv2.VideoWriter(f'/output/weights/{name}_video.avi', fourcc, 30.0, cfg.img_size)
-                    curve_writer = cv2.VideoWriter(f'/output/weights/{name}_curve.avi', fourcc, 30.0, (600, 430))
+                    video_writer = cv2.VideoWriter(f'/output/videos/{name}_video.avi', fourcc, 30.0, cfg.img_size)
+                    curve_writer = cv2.VideoWriter(f'/output/videos/{name}_curve.avi', fourcc, 30.0, (600, 430))
+                    # Check if video writers are opened successfully
+                    if not video_writer.isOpened():
+                        print("Error: Could not open video writer for original video")
 
+                    if not curve_writer.isOpened():
+                        print("Error: Could not open video writer for curve video")
+                        
                     js = []
                     plt.clf()
                     ax = plt.axes(xlim=(0, len(dataset)), ylim=(30, 45))
                     line, = ax.plot([], [], '-b')
 
                 if cfg.show_heatmap:
-                    heatmap_writer = cv2.VideoWriter(f'/output/weights/{name}_heatmap.avi', fourcc, 30.0, cfg.img_size)
+                    heatmap_writer = cv2.VideoWriter(f'/output/videos/{name}_heatmap.avi', fourcc, 30.0, cfg.img_size)
 
             psnrs = []
             for j, clip in enumerate(dataset):
