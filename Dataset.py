@@ -65,7 +65,7 @@ class test_dataset:
         self.imgs.sort()
 
     def __len__(self):
-        return len(self.imgs) - (self.clip_length - 1)  # The first [input_num] frames are unpredictable.
+        return max(len(self.imgs) - (self.clip_length - 1), 0)  # The first [input_num] frames are unpredictable.
 
     def __getitem__(self, indice):
         video_clips = []
