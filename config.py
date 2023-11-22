@@ -32,6 +32,7 @@ def update_config(args=None, mode=None):
     share_config['mode'] = mode
     assert args.dataset in ('ped2', 'avenue', 'shanghaitech'), 'Dataset error.'
     share_config['dataset'] = args.dataset
+    share_config['generator'] = args.generator
 
     if mode == 'train':
         share_config['batch_size'] = args.batch_size
@@ -45,12 +46,12 @@ def update_config(args=None, mode=None):
         share_config['save_interval'] = args.save_interval
         share_config['val_interval'] = args.val_interval
         share_config['flownet'] = args.flownet
-        share_config['generator'] = args.generator
 
     elif mode == 'test':
         share_config['test_data'] = share_config['data_root'] + args.dataset + '/testing/'
         share_config['trained_model'] = args.trained_model
         share_config['show_curve'] = args.show_curve
         share_config['show_heatmap'] = args.show_heatmap
+        
 
     return dict2class(share_config)  # change dict keys to class attributes

@@ -24,6 +24,7 @@ parser.add_argument('--show_curve', action='store_true',
                     help='Show and save the psnr curve real-timely, this drops fps.')
 parser.add_argument('--show_heatmap', action='store_true',
                     help='Show and save the difference heatmap real-timely, this drops fps.')
+parser.add_argument('--generator', default='unet', type=str, help='The name of the model that will be used as a generator')
 
 def val(cfg, model=None):
     if model:  # This is for testing during training.
