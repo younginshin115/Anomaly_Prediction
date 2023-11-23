@@ -209,10 +209,10 @@ try:
                     model_dict = {'net_g': generator.state_dict(), 'optimizer_g': optimizer_G.state_dict(),
                                   'net_d': discriminator.state_dict(), 'optimizer_d': optimizer_D.state_dict()}
                     torch.save(model_dict, f'weights/{train_cfg.dataset}_{step}.pth')
-                    if not os.path.exists('/output/weights'):
-                        print(f" [*] Make directories : /output/weights")
-                        os.makedirs('/output/weights')
-                    torch.save(model_dict, f'/output/weights/{train_cfg.dataset}_{step}.pth')
+                    if not os.path.exists(f'/output/weights_{train_cfg.generator}'):
+                        print(f" [*] Make directories : /output/weights_{train_cfg.generator}")
+                        os.makedirs(f'/output/weights_{train_cfg.generator}')
+                    torch.save(model_dict, f'/output/weights_{train_cfg.generator}/{train_cfg.dataset}_{step}.pth')
                     print(f'\nAlready saved: \'{train_cfg.dataset}_{step}.pth\'.')
 
                 if step % train_cfg.val_interval == 0:
@@ -225,11 +225,11 @@ try:
                 training = False
                 model_dict = {'net_g': generator.state_dict(), 'optimizer_g': optimizer_G.state_dict(),
                               'net_d': discriminator.state_dict(), 'optimizer_d': optimizer_D.state_dict()}
-                if not os.path.exists('/output/weights'):
-                    print(f" [*] Make directories : /output/weights")
-                    os.makedirs('/output/weights')
+                if not os.path.exists(f'/output/weights_{train_cfg.generator}'):
+                    print(f" [*] Make directories : /output/weights_{train_cfg.generator}")
+                    os.makedirs(f'/output/weights_{train_cfg.generator}')
                 torch.save(model_dict, f'weights/latest_{train_cfg.dataset}_{step}.pth')
-                torch.save(model_dict, f'/output/weights/latest_{train_cfg.dataset}_{step}.pth')
+                torch.save(model_dict, f'/output/weights_{train_cfg.generator}/latest_{train_cfg.dataset}_{step}.pth')
                 break
 
 except KeyboardInterrupt:
@@ -240,9 +240,9 @@ except KeyboardInterrupt:
 
     model_dict = {'net_g': generator.state_dict(), 'optimizer_g': optimizer_G.state_dict(),
                   'net_d': discriminator.state_dict(), 'optimizer_d': optimizer_D.state_dict()}
-    if not os.path.exists('/output/weights'):
-        print(f" [*] Make directories : /output/weights")
-        os.makedirs('/output/weights')
+    if not os.path.exists(f'/output/weights_{train_cfg.generator}'):
+        print(f" [*] Make directories : /output/weights_{train_cfg.generator}")
+        os.makedirs(f'/output/weights_{train_cfg.generator}')
     torch.save(model_dict, f'weights/latest_{train_cfg.dataset}_{step}.pth')
-    torch.save(model_dict, f'/output/weights/latest_{train_cfg.dataset}_{step}.pth')
+    torch.save(model_dict, f'/output/weights_{train_cfg.generator}/latest_{train_cfg.dataset}_{step}.pth')
 
