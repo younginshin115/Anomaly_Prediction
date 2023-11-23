@@ -33,7 +33,10 @@ def val(cfg, model=None):
             generator = TransAnomaly(batch_size=cfg.batch_size, num_frames=1).cuda()
         generator.eval()
     else:
-        generator = UNet(input_channels=12, output_channel=3).cuda().eval()
+        if cfg.generator == 'transanormaly':
+            generator = TransAnomaly(batch_size=cfg.batch_size, num_frames=1).cuda().eval()
+        else:
+            generator = UNet(input_channels=12, output_channel=3).cuda().eval()
         generator.load_state_dict(torch.load('weights/' + cfg.trained_model)['net_g'])
         print(f'The pre-trained generator has been loaded from \'weights/{cfg.trained_model}\'.\n')
 
