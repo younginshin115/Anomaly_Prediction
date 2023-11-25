@@ -10,7 +10,7 @@ from einops.layers.torch import Rearrange
 from models.ViViT.module import Attention, PreNorm, FeedForward
 
 class TransAnomaly(nn.Module):
-    def __init__(self, batch_size, num_frames):
+    def __init__(self, batch_size, num_frames, input_channels=3):
         super(TransAnomaly, self).__init__()
         self.batch_size = batch_size
         self.num_frames = num_frames
@@ -20,7 +20,7 @@ class TransAnomaly(nn.Module):
         self.channels_4 = 512#endcoder 기준 4번째 layer의 채널 : encoder 최종 채널
 
         #input image의 shape = (b, t, c, h, w) = (b, 4, 3, 256, 256)
-        self.contracting_11 = self.conv_block(in_channels=3, out_channels=self.channels_1) #3 * 256 * 256 -> 64*256*256
+        self.contracting_11 = self.conv_block(in_channels=input_channels, out_channels=self.channels_1) #3 * 256 * 256 -> 64*256*256
         self.contracting_12 = nn.MaxPool2d(kernel_size=2, stride=2) # (64,128,128)
         self.contracting_21 = self.conv_block(in_channels=self.channels_1, out_channels=self.channels_2) #(128, 128, 128)
         self.contracting_22 = nn.MaxPool2d(kernel_size=2, stride=2) #(128,64,64)
