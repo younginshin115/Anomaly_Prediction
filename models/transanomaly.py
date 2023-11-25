@@ -67,12 +67,12 @@ class TransAnomaly(nn.Module):
     def forward(self, frames):
         #frames.shape = (batch, num_frames, c, h ,w) --reshape--> (batch * num_frames, c, h, w)
         ########## encoding #######
-        print('start contracting')
+        # print('start contracting')
 
         #트릭 사용. conv2d를 쓰기 때문에 차원수 줄여야함 -> batch와 frames(t) 차원 합침. / 이미지 컨볼루전은 각 프레임별로 이루어지므로 가능.
         #이제 unet encoder에서 (b * t)를 배치로 취급해서 인코딩 진행.
         tmp_frames = rearrange(frames, 'b t c h w -> (b t) c h w')
-        print(tmp_frames.shape)
+        # print(tmp_frames.shape)
         contracting_11_out = self.contracting_11(tmp_frames) # [-1, 64, 256, 256]
         # print(frames.shape)
         # contracting_11_out = self.contracting_11(frames) # [-1, 64, 256, 256]
@@ -82,20 +82,20 @@ class TransAnomaly(nn.Module):
         contracting_31_out = self.contracting_31(contracting_22_out) # [-1, 256, 64, 64]
         contracting_32_out = self.contracting_32(contracting_31_out) # [-1, 256, 32, 32]
         contracting_41_out = self.contracting_41(contracting_32_out) # [-1, 512, 32, 32]
-        print(contracting_41_out.shape)
-        print('end contracting')
+        # print(contracting_41_out.shape)
+        # print('end contracting')
         ############
 
         ####### vivit layer ########
-        print('start vivit')
-        print(self.batch_size)
+        # print('start vivit')
+        # print(self.batch_size)
         # 다시 t 차원 살려줌.
         vivit_input = rearrange(contracting_41_out, '(b t) c h w -> b t c h w', b=self.batch_size)
-        print('vivit input : ',vivit_input.shape)
+        # print('vivit input : ',vivit_input.shape)
         middle_out = self.middle(vivit_input) # [batch_size, num_frames , 512, 32, 32]
         # middle_out = vivit_input[:,0,:,:16,:16]
-        print('vivit output : ',middle_out.shape)
-        print('end vivit')
+        # print('vivit output : ',middle_out.shape)
+        # print('end vivit')
         #middle_out.shape should be (b, c, h, w) = (-1, 512, 16,16) (논문에 제시된 형태에 따르면)
         # num_frames 개의 프레임을 보고 다음 프레임 예측하는 것이므로 예측 feature map은 1개 frame 임.
         ############
@@ -106,7 +106,7 @@ class TransAnomaly(nn.Module):
         #convolution 후 shape => (b, c, h ,w) 되도록 (즉, t차원 사라지게 됨.)
         #이걸 디코딩할 때 각 layer의 feature map에  concate함.
         #residual_XY -> X : endcoding layer 번호, Y : decoding layer 번호 (u자 형태이기 떄문에 1번 레이어와 4번 레이어가 연결됨.)
-        print('start risidual calculation')
+        # print('start risidual calculation')
         residual_14_out = rearrange(contracting_11_out, '(b t) c h w -> b (t c) h w', b=self.batch_size)
         residual_14_out = self.residual_14(residual_14_out) #shape = (b,c,h,w) : (64,256,256)
         residual_23_out = rearrange(contracting_21_out, '(b t) c h w -> b (t c) h w', b=self.batch_size)
@@ -115,13 +115,13 @@ class TransAnomaly(nn.Module):
         residual_32_out = self.residual_32(residual_32_out)#shape = (b,c,h,w) : (256,64,64)
         residual_41_out = rearrange(contracting_41_out, '(b t) c h w -> b (t c) h w', b=self.batch_size)
         residual_41_out = self.residual_41(residual_41_out)#shape = (b,c,h,w) : (512,32,32)
-        print('end risidual')
+        # print('end risidual')
 
 
         ####### decoding ##########
         #vivit의 output 받아옴.
         #vivit output인 middle_out.shape = (b, 512, 16, 16)
-        print('start expanding')
+        # print('start expanding')
         expansive_11_out = self.expansive_11(middle_out) # output의 shape = [-1, 512, 32, 32] = (b, c, h, w)
         expansive_12_out = self.expansive_12(torch.cat((expansive_11_out, residual_41_out), dim=1)) # [-1, 1024, 32, 32] -> [-1, 512, 32, 32]
         expansive_21_out = self.expansive_21(expansive_12_out) # [-1, 256, 64, 64]
@@ -131,7 +131,7 @@ class TransAnomaly(nn.Module):
         expansive_41_out = self.expansive_41(expansive_32_out) # [-1, 64, 256, 256]
         expansive_42_out = self.expansive_42(torch.cat((expansive_41_out, residual_14_out), dim=1)) # [-1, 128, 256, 256] -> [-1, 64, 256, 256]
         output_out = self.output(expansive_42_out) # [-1, 3, 256, 256]
-        print('end')
+        # print('end')
         ############
         # return output_out
         return torch.tanh(output_out)
@@ -203,26 +203,26 @@ class ViViT(nn.Module):
 
 
     def forward(self, x):
-        print(x.shape)
+        # print(x.shape)
         x = self.to_patch_embedding(x)
-        print(x.shape) #(b,n, 512*t)
+        # print(x.shape) #(b,n, 512*t)
         b, n, d = x.shape
         #temporal token 차원 맞춰주기
         pred_temporal_tokens = repeat(self.temporal_token, '() () d -> b n d', b=b, n=n)
-        print(pred_temporal_tokens.shape)
+        # print(pred_temporal_tokens.shape)
         x = torch.cat((pred_temporal_tokens, x), dim=2) #(b,n,512*(t+1)) (b,256,2560)
         x += self.temporal_pos_embedding[:,:,:(d+self.dim)]
         x = self.dropout(x)
-        print('temp transformer : ',x.shape)
+        # print('temp transformer : ',x.shape)
         x = self.temporal_transformer(x)
 
         x = x[:,:,:self.dim] #x.shape = (b, n ,d)
 
         x += self.spatial_pos_embedding
 
-        print('space transformer : ', x.shape)
+        # print('space transformer : ', x.shape)
         x = self.space_transformer(x)
-        print('after transformer : ', x.shape)
+        # print('after transformer : ', x.shape)
         # x = self.to_reshaping(x)
         x = rearrange(x, 'b (h w) c -> b c h w', h=self.image_size//2,w=self.image_size//2)
 
