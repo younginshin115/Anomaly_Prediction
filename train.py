@@ -102,7 +102,8 @@ try:
                     train_dataset.all_seqs[index] = list(range(len(train_dataset.videos[index]) - 4))
                     random.shuffle(train_dataset.all_seqs[index])
             if train_cfg.generator == 'transanormaly':
-                new_input_frames = input_frames.reshape(train_cfg.batch_size, 4, 3, 256, 256)
+                num_of_channels = 1 if train_cfg.dataset == 'ped2' else 3
+                new_input_frames = input_frames.reshape(train_cfg.batch_size, 4, num_of_channels, 256, 256)
                 G_frame = generator(new_input_frames)
             else:
                 G_frame = generator(input_frames)
