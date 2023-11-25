@@ -29,12 +29,12 @@ parser.add_argument('--generator', default='unet', type=str, help='The name of t
 def val(cfg, model=None):
     if model:  # This is for testing during training.
         generator = model
-        # if cfg.generator == 'transanormaly':
-        #     generator = TransAnomaly(batch_size=cfg.batch_size, num_frames=1).cuda()
+        if cfg.generator == 'transanormaly':
+            generator = TransAnomaly(batch_size=1, num_frames=4).cuda()
         generator.eval()
     else:
         if cfg.generator == 'transanormaly':
-            generator = TransAnomaly(batch_size=4, num_frames=4).cuda().eval()
+            generator = TransAnomaly(batch_size=1, num_frames=4).cuda().eval()
         else:
             generator = UNet(input_channels=12, output_channel=3).cuda().eval()
         generator.load_state_dict(torch.load('weights/' + cfg.trained_model)['net_g'])
@@ -105,15 +105,14 @@ def val(cfg, model=None):
                 
                 # 데이터 크기 확인
                 print(f"Original input size: {input_np.shape}")
-                if cfg.generator == 'transanormaly':
-                    input_frames = torch.from_numpy(input_np).permute(1, 0, 2, 3).unsqueeze(0).cuda()
-                    target_frame = torch.from_numpy(target_np).permute(1, 0, 2, 3).unsqueeze(0).cuda()
+                
+                input_frames = torch.from_numpy(input_np).unsqueeze(0).cuda()
+                target_frame = torch.from_numpy(target_np).unsqueeze(0).cuda()
 
-                    new_input_frames = input_frames.reshape(cfg.batch_size, 1, 3, 256, 256)
+                if cfg.generator == 'transanormaly':
+                    new_input_frames = input_frames.reshape(1, 4, 3, 256, 256)
                     G_frame = generator(new_input_frames)
                 else:
-                    input_frames = torch.from_numpy(input_np).unsqueeze(0).cuda()
-                    target_frame = torch.from_numpy(target_np).unsqueeze(0).cuda()
                     G_frame = generator(input_frames)
 
                 test_psnr = psnr_error(G_frame, target_frame).cpu().detach().numpy()
