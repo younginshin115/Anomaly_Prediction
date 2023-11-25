@@ -19,7 +19,7 @@ class TransAnomaly(nn.Module):
         self.channels_3 = 256#endcoder 기준 3번째 layer의 채널
         self.channels_4 = 512#endcoder 기준 4번째 layer의 채널 : encoder 최종 채널
 
-        #input image의 shape = (b, t, c, h, w) = (b, 4, 3, 256, 256)
+        #input image의 shape = (b, t, c, h, w) = (b, 4, 3, 256, 256) or (b, 4, 1, 256, 256)
         self.contracting_11 = self.conv_block(in_channels=input_channels, out_channels=self.channels_1) #3 * 256 * 256 -> 64*256*256
         self.contracting_12 = nn.MaxPool2d(kernel_size=2, stride=2) # (64,128,128)
         self.contracting_21 = self.conv_block(in_channels=self.channels_1, out_channels=self.channels_2) #(128, 128, 128)

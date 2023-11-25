@@ -39,8 +39,10 @@ args = parser.parse_args()
 train_cfg = update_config(args, mode='train')
 train_cfg.print_cfg()
 
+num_of_channels = 1 if train_cfg.dataset == 'ped2' else 3
+
 if train_cfg.generator == 'transanormaly':
-    generator = TransAnomaly(batch_size=train_cfg.batch_size, num_frames=4).cuda()
+    generator = TransAnomaly(batch_size=train_cfg.batch_size, num_frames=4, input_channels=num_of_channels).cuda()
 else:
     generator = UNet(input_channels=12, output_channel=3).cuda()
 discriminator = PixelDiscriminator(input_nc=3).cuda()
@@ -102,7 +104,6 @@ try:
                     train_dataset.all_seqs[index] = list(range(len(train_dataset.videos[index]) - 4))
                     random.shuffle(train_dataset.all_seqs[index])
             if train_cfg.generator == 'transanormaly':
-                num_of_channels = 1 if train_cfg.dataset == 'ped2' else 3
                 new_input_frames = input_frames.reshape(train_cfg.batch_size, 4, num_of_channels, 256, 256)
                 G_frame = generator(new_input_frames)
             else:
