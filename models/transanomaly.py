@@ -10,7 +10,7 @@ from einops.layers.torch import Rearrange
 from models.ViViT.module import Attention, PreNorm, FeedForward
 
 class TransAnomaly(nn.Module):
-    def __init__(self, batch_size, num_frames, input_channels=3):
+    def __init__(self, batch_size, num_frames, input_channels=3, t_depth=4, s_depth=4):
         super(TransAnomaly, self).__init__()
         self.batch_size = batch_size
         self.num_frames = num_frames
@@ -40,7 +40,7 @@ class TransAnomaly(nn.Module):
         #vivit layer
         # input : (b, 512, 32, 32)
         # output : (b, 512, 16, 16)
-        self.middle = ViViT(image_size=32, patch_size=2, num_frames=self.num_frames, in_channels=512) #(b,t,c,h,w) = (b, 4, 512,32,32) -> (b,c,h,w) = (b,512,16,16)
+        self.middle = ViViT(image_size=32, patch_size=2, num_frames=self.num_frames, in_channels=512, t_depth=t_depth, s_depth=s_depth) #(b,t,c,h,w) = (b, 4, 512,32,32) -> (b,c,h,w) = (b,512,16,16)
         # input : (512,16,16)
 
         #decoder
@@ -160,7 +160,7 @@ class Transformer(nn.Module):
 # vivit에서 class token을 -> prediction token으로 사용. 각 토큰 그룹당 하니씩 predtiction token 추가
 #따라서 Np(num_patches)개 만큼 token 추가됨.
 class ViViT(nn.Module):
-    def __init__(self, image_size, patch_size, num_frames, dim = 512, depth = 4, heads = 3, pool = 'cls', in_channels = 512, dim_head = 64, dropout = 0.,
+    def __init__(self, image_size, patch_size, num_frames, dim = 512, t_depth = 4, s_depth = 4, heads = 3, pool = 'cls', in_channels = 512, dim_head = 64, dropout = 0.,
                  emb_dropout = 0., scale_dim = 4, ):
         super().__init__()
 
@@ -192,11 +192,11 @@ class ViViT(nn.Module):
         self.temporal_pos_embedding = nn.Parameter(torch.randn(1, self.num_patches, (self.num_frames + 1)*self.dim))
         #temporal prediction token
         self.temporal_token = nn.Parameter(torch.randn(1, 1, self.dim))
-        self.temporal_transformer = Transformer(dim * (self.num_frames + 1), depth, heads, dim_head, dim*scale_dim, dropout) # (b,num_patchs, dim * (t+1)) 차원 인풋
+        self.temporal_transformer = Transformer(dim * (self.num_frames + 1), t_depth, heads, dim_head, dim*scale_dim, dropout) # (b,num_patchs, dim * (t+1)) 차원 인풋
 
         self.spatial_pos_embedding = nn.Parameter(torch.randn(1, self.num_patches, self.dim))
         # self.space_token = nn.Parameter(torch.randn(1, 1, dim))
-        self.space_transformer = Transformer(dim, depth, heads, dim_head, dim*scale_dim, dropout) # (b,num_patches * dim) 차원 인풋 => temporal prediction token을 flatten해서 인풋
+        self.space_transformer = Transformer(dim, s_depth, heads, dim_head, dim*scale_dim, dropout) # (b,num_patches * dim) 차원 인풋 => temporal prediction token을 flatten해서 인풋
 
         self.dropout = nn.Dropout(emb_dropout)
         self.pool = pool

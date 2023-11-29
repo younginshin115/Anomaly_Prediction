@@ -24,6 +24,10 @@ import vessl
 parser = argparse.ArgumentParser(description='Anomaly Prediction')
 parser.add_argument('--batch_size', default=8, type=int)
 parser.add_argument('--dataset', default='avenue', type=str, help='The name of the dataset to train.')
+parser.add_argument('--generator', default='unet', type=str, help='The name of the model that will be used as a generator')
+parser.add_argument('--s_depth', default=4, type=int, help='The depth of the spatial transformer')
+parser.add_argument('--t_depth', default=4, type=int, help='The depth of the temporal transformer')
+
 parser.add_argument('--iters', default=40000, type=int, help='The total iteration number.')
 parser.add_argument('--resume', default=None, type=str,
                     help='The pre-trained model to resume training with, pass \'latest\' or the model name.')
@@ -33,14 +37,14 @@ parser.add_argument('--val_interval', default=1000, type=int,
 parser.add_argument('--show_flow', default=False, action='store_true',
                     help='If True, the first batch of ground truth optic flow could be visualized and saved.')
 parser.add_argument('--flownet', default='lite', type=str, help='lite: LiteFlownet, 2sd: FlowNet2SD.')
-parser.add_argument('--generator', default='unet', type=str, help='The name of the model that will be used as a generator')
+
 
 args = parser.parse_args()
 train_cfg = update_config(args, mode='train')
 train_cfg.print_cfg()
 
 if train_cfg.generator == 'transanormaly':
-    generator = TransAnomaly(batch_size=train_cfg.batch_size, num_frames=4).cuda()
+    generator = TransAnomaly(batch_size=train_cfg.batch_size, num_frames=4, s_depth=train_cfg.s_depth, t_depth=train_cfg.t_depth).cuda()
 else:
     generator = UNet(input_channels=12, output_channel=3).cuda()
 discriminator = PixelDiscriminator(input_nc=3).cuda()

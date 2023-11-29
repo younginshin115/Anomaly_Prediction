@@ -33,6 +33,8 @@ def update_config(args=None, mode=None):
     assert args.dataset in ('ped2', 'avenue', 'shanghaitech'), 'Dataset error.'
     share_config['dataset'] = args.dataset
     share_config['generator'] = args.generator
+    share_config['s_depth'] = args.s_depth
+    share_config['t_depth'] = args.t_depth
 
     if mode == 'train':
         share_config['batch_size'] = args.batch_size
