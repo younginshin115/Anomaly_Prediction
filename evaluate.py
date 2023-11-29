@@ -32,6 +32,13 @@ def val(cfg, model=None):
         generator = model
         if cfg.generator == 'transanormaly':
             generator = TransAnomaly(batch_size=1, num_frames=4, input_channels=num_of_channels).cuda()
+            files_Path = 'weights/'
+            files_list = []
+            for f_name in os.listdir(f"{files_Path}"):
+                written_time = os.path.getctime(f"{files_Path}{f_name}")
+                files_list.append((f_name, written_time))
+            sorted_file_lst = sorted(files_list, key=lambda x: x[1], reverse=True)
+            generator.load_state_dict(torch.load('weights/' + sorted_file_lst[0][0])['net_g'])
         generator.eval()
     else:
         if cfg.generator == 'transanormaly':
