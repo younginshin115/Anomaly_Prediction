@@ -27,11 +27,10 @@ parser.add_argument('--show_heatmap', action='store_true',
 parser.add_argument('--generator', default='unet', type=str, help='The name of the model that will be used as a generator')
 
 def val(cfg, model=None):
-    num_of_channels = 1 if cfg.dataset == 'ped2' else 3
     if model:  # This is for testing during training.
         generator = model
         if cfg.generator == 'transanormaly':
-            generator = TransAnomaly(batch_size=1, num_frames=4, input_channels=num_of_channels).cuda()
+            generator = TransAnomaly(batch_size=1, num_frames=4).cuda()
             files_Path = 'weights/'
             files_list = []
             for f_name in os.listdir(f"{files_Path}"):
@@ -42,7 +41,7 @@ def val(cfg, model=None):
         generator.eval()
     else:
         if cfg.generator == 'transanormaly':
-            generator = TransAnomaly(batch_size=1, num_frames=4, input_channels=num_of_channels).cuda().eval()
+            generator = TransAnomaly(batch_size=1, num_frames=4).cuda().eval()
         else:
             generator = UNet(input_channels=12, output_channel=3).cuda().eval()
         generator.load_state_dict(torch.load('weights/' + cfg.trained_model)['net_g'])
@@ -119,7 +118,7 @@ def val(cfg, model=None):
 
                 if cfg.generator == 'transanormaly':
                     
-                    new_input_frames = input_frames.reshape(1, 4, num_of_channels, 256, 256)
+                    new_input_frames = input_frames.reshape(1, 4, 3, 256, 256)
                     G_frame = generator(new_input_frames)
                 else:
                     G_frame = generator(input_frames)
