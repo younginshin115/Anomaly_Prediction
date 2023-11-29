@@ -37,6 +37,10 @@ parser.add_argument('--val_interval', default=1000, type=int,
 parser.add_argument('--show_flow', default=False, action='store_true',
                     help='If True, the first batch of ground truth optic flow could be visualized and saved.')
 parser.add_argument('--flownet', default='lite', type=str, help='lite: LiteFlownet, 2sd: FlowNet2SD.')
+parser.add_argument('--use_intensity_loss', default=1, type=int, help='Whether use the intensity loss or not, False = 0, True = 1')
+parser.add_argument('--use_gradient_loss', default=1, type=int, help='Whether use the gradient loss or not, False = 0, True = 1')
+parser.add_argument('--use_flow_loss', default=1, type=int, help='Whether use the flow loss or not, False = 0, True = 1')
+parser.add_argument('--use_adversarial_loss', default=1, type=int, help='Whether use the adversarial loss or not, False = 0, True = 1')
 
 
 args = parser.parse_args()
@@ -137,7 +141,10 @@ try:
             grad_l = gradient_loss(G_frame, target_frame)
             fl_l = flow_loss(flow_pred, flow_gt)
             g_l = adversarial_loss(discriminator(G_frame))
-            G_l_t = 1. * inte_l + 1. * grad_l + 2. * fl_l + 0.05 * g_l
+            G_l_t = 1. * inte_l * train_cfg.use_intensity_loss \
+                + 1. * grad_l * train_cfg.use_gradient_loss \
+                    + 2. * fl_l * train_cfg.use_flow_loss \
+                        + 0.05 * g_l * train_cfg.use_adversarial_loss
 
             # When training discriminator, don't train generator, so use .detach() to cut off gradients.
             D_l = discriminate_loss(discriminator(target_frame), discriminator(G_frame.detach()))

@@ -48,6 +48,12 @@ def update_config(args=None, mode=None):
         share_config['save_interval'] = args.save_interval
         share_config['val_interval'] = args.val_interval
         share_config['flownet'] = args.flownet
+        share_config['use_intensity_loss'] = args.use_intensity_loss
+        share_config['use_gradient_loss'] = args.use_gradient_loss
+        share_config['use_flow_loss'] = args.use_flow_loss
+        share_config['use_adversarial_loss'] = args.use_adversarial_loss
+        
+        
 
     elif mode == 'test':
         share_config['test_data'] = share_config['data_root'] + args.dataset + '/testing/'

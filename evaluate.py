@@ -25,6 +25,8 @@ parser.add_argument('--show_curve', action='store_true',
 parser.add_argument('--show_heatmap', action='store_true',
                     help='Show and save the difference heatmap real-timely, this drops fps.')
 parser.add_argument('--generator', default='unet', type=str, help='The name of the model that will be used as a generator')
+parser.add_argument('--s_depth', default=4, type=int, help='The depth of the spatial transformer')
+parser.add_argument('--t_depth', default=4, type=int, help='The depth of the temporal transformer')
 
 def val(cfg, model=None):
     if model:  # This is for testing during training.
