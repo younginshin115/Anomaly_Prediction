@@ -113,7 +113,7 @@ def val(cfg, model=None):
                 target_np = clip[12:15, :, :]
                 
                 # 데이터 크기 확인
-                print(f"Original input size: {input_np.shape}")
+                # print(f"Original input size: {input_np.shape}")
                 
                 input_frames = torch.from_numpy(input_np).unsqueeze(0).cuda()
                 target_frame = torch.from_numpy(target_np).unsqueeze(0).cuda()

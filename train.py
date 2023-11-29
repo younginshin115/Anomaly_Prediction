@@ -110,7 +110,7 @@ try:
                     train_dataset.all_seqs[index] = list(range(len(train_dataset.videos[index]) - 4))
                     random.shuffle(train_dataset.all_seqs[index])
             if train_cfg.generator == 'transanormaly':
-                print(f"Original input size: {input_frames.shape}")
+                # print(f"Original input size: {input_frames.shape}")
                 new_input_frames = input_frames.reshape(train_cfg.batch_size, 4, 3, 256, 256)
                 G_frame = generator(new_input_frames)
             else:
