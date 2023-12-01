@@ -94,6 +94,7 @@ start_iter = int(train_cfg.resume.split('_')[-1].split('.')[0]) if train_cfg.res
 training = True
 generator = generator.train()
 discriminator = discriminator.train()
+best_auc = 0
 
 try:
     step = start_iter
@@ -230,6 +231,20 @@ try:
                 if step % train_cfg.val_interval == 0:
                     auc = val(train_cfg, model=generator)
                     writer.add_scalar('results/auc', auc, global_step=step)
+                    # Check if the current AUC is the best so far
+                    if auc > best_auc:
+                        best_auc = auc
+                        # Save the model with the best AUC
+                        model_dict = {'net_g': generator.state_dict(), 'optimizer_g': optimizer_G.state_dict(),
+                                    'net_d': discriminator.state_dict(), 'optimizer_d': optimizer_D.state_dict()}
+                        torch.save(model_dict, f'weights/best_{train_cfg.dataset}.pth')
+
+                        if not os.path.exists(f'/output/weights_{train_cfg.generator}'):
+                            print(f" [*] Make directories : /output/weights_{train_cfg.generator}")
+                            os.makedirs(f'/output/weights_{train_cfg.generator}')
+                        torch.save(model_dict, f'/output/weights_{train_cfg.generator}/best_{train_cfg.dataset}.pth')
+                        print(f'\nBest model saved: \'best_{train_cfg.dataset}.pth\' ({step}).')
+                    
                     generator.train()
 
             step += 1
