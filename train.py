@@ -250,6 +250,7 @@ try:
             step += 1
             if step > train_cfg.iters:
                 training = False
+                writer.add_scalar('results/auc', best_auc, global_step=step) # best auc 추가될 지 확인 필요
                 model_dict = {'net_g': generator.state_dict(), 'optimizer_g': optimizer_G.state_dict(),
                               'net_d': discriminator.state_dict(), 'optimizer_d': optimizer_D.state_dict()}
                 if not os.path.exists(f'/output/weights_{train_cfg.generator}'):
