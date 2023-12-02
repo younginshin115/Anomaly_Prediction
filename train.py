@@ -41,6 +41,7 @@ parser.add_argument('--use_intensity_loss', default=1, type=int, help='Whether u
 parser.add_argument('--use_gradient_loss', default=1, type=int, help='Whether use the gradient loss or not, False = 0, True = 1')
 parser.add_argument('--use_flow_loss', default=1, type=int, help='Whether use the flow loss or not, False = 0, True = 1')
 parser.add_argument('--use_adversarial_loss', default=1, type=int, help='Whether use the adversarial loss or not, False = 0, True = 1')
+parser.add_argument('--use_content_loss', default=1, type=int, help='Whether use the content loss or not, False = 0, True = 1')
 
 
 args = parser.parse_args()
@@ -81,6 +82,7 @@ discriminate_loss = Discriminate_Loss().cuda()
 gradient_loss = Gradient_Loss(3).cuda()
 flow_loss = Flow_Loss().cuda()
 intensity_loss = Intensity_Loss().cuda()
+content_loss = ContentLoss(torch.nn.MSELoss).cuda()
 
 train_dataset = Dataset.train_dataset(train_cfg)
 
@@ -142,10 +144,12 @@ try:
             grad_l = gradient_loss(G_frame, target_frame)
             fl_l = flow_loss(flow_pred, flow_gt)
             g_l = adversarial_loss(discriminator(G_frame))
+            c_l = content_loss.get_loss(G_frame, target_frame)
             G_l_t = 1. * inte_l * train_cfg.use_intensity_loss \
                 + 1. * grad_l * train_cfg.use_gradient_loss \
                     + 2. * fl_l * train_cfg.use_flow_loss \
-                        + 0.05 * g_l * train_cfg.use_adversarial_loss
+                        + 0.05 * g_l * train_cfg.use_adversarial_loss \
+                            + 1 * c_l * train_cfg.use_content_loss
 
             # When training discriminator, don't train generator, so use .detach() to cut off gradients.
             D_l = discriminate_loss(discriminator(target_frame), discriminator(G_frame.detach()))
@@ -196,7 +200,7 @@ try:
                     lr_g = optimizer_G.param_groups[0]['lr']
                     lr_d = optimizer_D.param_groups[0]['lr']
 
-                    print(f"[{step}]  inte_l: {inte_l:.3f} | grad_l: {grad_l:.3f} | fl_l: {fl_l:.3f} | "
+                    print(f"[{step}]  inte_l: {inte_l:.3f} | grad_l: {grad_l:.3f} | fl_l: {fl_l:.3f} | c_l: {c_l:.3f} |"
                           f"g_l: {g_l:.3f} | G_l_total: {G_l_t:.3f} | D_l: {D_l:.3f} | psnr: {psnr:.3f} | "
                           f"iter: {iter_t:.3f}s | ETA: {eta} | lr: {lr_g} {lr_d}")
 
@@ -212,6 +216,7 @@ try:
                     writer.add_scalar('G_loss_total/fl_loss', fl_l, global_step=step)
                     writer.add_scalar('G_loss_total/inte_loss', inte_l, global_step=step)
                     writer.add_scalar('G_loss_total/grad_loss', grad_l, global_step=step)
+                    writer.add_scalar('G_loss_total/c_loss', c_l, global_step=step)
                     writer.add_scalar('psnr/train_psnr', psnr, global_step=step)
 
                 if step % int(train_cfg.iters / 100) == 0:
