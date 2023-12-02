@@ -66,6 +66,7 @@ class Discriminate_Loss(nn.Module):
         return torch.mean((real_outputs - 1) ** 2 / 2) + torch.mean(fake_outputs ** 2 / 2)
 
 class ContentLoss(nn.Module):
+    # https://dacon.io/competitions/official/235746/codeshare/2984
     def __init__(self, loss):
         super(ContentLoss, self).__init__()
         self.criterion = loss(reduction='mean') # L1, L2 선택
@@ -111,6 +112,7 @@ class ContentLoss(nn.Module):
 
 
 class StyleLoss(nn.Module):
+    # https://tutorials.pytorch.kr/advanced/neural_style_tutorial.html
     def __init__(self, loss):
         super(StyleLoss, self).__init__()
         self.criterion = loss(reduction='mean')
