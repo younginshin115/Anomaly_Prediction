@@ -53,9 +53,8 @@ def update_config(args=None, mode=None):
         share_config['use_flow_loss'] = args.use_flow_loss
         share_config['use_adversarial_loss'] = args.use_adversarial_loss
         share_config['use_content_loss'] = args.use_content_loss
+        share_config['use_style_loss'] = args.use_style_loss
         
-        
-
     elif mode == 'test':
         share_config['test_data'] = share_config['data_root'] + args.dataset + '/testing/'
         share_config['trained_model'] = args.trained_model

@@ -108,6 +108,26 @@ class ContentLoss(nn.Module):
         
         return model
 
+
+
+class StyleLoss(nn.Module):
+    def __init__(self, loss):
+        super(StyleLoss, self).__init__()
+        self.criterion = loss(reduction='mean')
+
+    def gram_matrix(self, input):
+        a, b, c, d = input.size()  
+        features = input.view(a * b, c * d)
+        G = torch.mm(features, features.t()) 
+        
+        return G.div(a * b * c * d)
+
+    def forward(self, pred, target):
+        pred_g = self.gram_matrix(pred)
+        target_g = self.gram_matrix(target)
+        loss = self.criterion(pred_g, target_g)
+        return loss
+
 # if __name__ == '__main__':
 #     # Debug Gradient_Loss, mainly on the padding issue.
 #     import numpy as np
