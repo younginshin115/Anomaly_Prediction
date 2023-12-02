@@ -79,7 +79,7 @@ class ContentLoss(nn.Module):
         return loss
 
     def content_model(self):
-        self.cnn = models.vgg19(pretrained=True).features
+        self.cnn = vgg19(pretrained=True).features
         self.cnn.cuda()
         # Content loss 계산을 위한 레이어 선택
         content_layers = ['relu_8']
