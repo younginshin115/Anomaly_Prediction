@@ -149,7 +149,7 @@ try:
                 + 1. * grad_l * train_cfg.use_gradient_loss \
                     + 2. * fl_l * train_cfg.use_flow_loss \
                         + 0.05 * g_l * train_cfg.use_adversarial_loss \
-                            + 1 * c_l * train_cfg.use_content_loss
+                            + 0.5 * c_l * train_cfg.use_content_loss
 
             # When training discriminator, don't train generator, so use .detach() to cut off gradients.
             D_l = discriminate_loss(discriminator(target_frame), discriminator(G_frame.detach()))
