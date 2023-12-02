@@ -68,7 +68,7 @@ class Discriminate_Loss(nn.Module):
 class ContentLoss(nn.Module):
     def __init__(self, loss):
         super(ContentLoss, self).__init__()
-        self.criterion = loss # L1, L2 선택
+        self.criterion = loss(reduction='mean') # L1, L2 선택
         self.net = self.content_model()
 
     def get_loss(self, pred, target):
