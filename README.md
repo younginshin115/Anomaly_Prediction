@@ -1,15 +1,13 @@
-# Anomaly_Prediction
-Pytorch implementation of anomaly prediction for CVPR2018:[Future Frame Prediction for Anomaly Detection – A New Baseline](https://arxiv.org/pdf/1712.09867.pdf).  
-This implementation used lite-flownet instead of Flownet2SD and the generator network is slightly different.  
-I only trained the ped2 and avenue datasets, the results:  
+# Exepriment
+
+An experiment to improve for CVPR2018:[Future Frame Prediction for Anomaly Detection – A New Baseline](https://arxiv.org/pdf/1712.09867.pdf).
+It was a team project in an university course. You can find the details of this experiment [here](https://younginshin115.github.io/project/project-03-ffp/).
+The code was based on this repository: [Anomaly_Prediction](https://github.com/feiyuhuahuo/Anomaly_Prediction).
 
 |     AUC                  |USCD Ped2    |CUHK Avenue         |
 |:------------------------:|:-----------:|:------------------:|
 | original implementation  |95.4%        | 84.9%              |
 |  this  implementation    |95.6%        | 84.6%              |
-
-### The network pipeline.  
-![Example 0](contents/pipeline.png)
 
 ## Environments  
 PyTorch >= 1.1.  
@@ -17,7 +15,8 @@ Python >= 3.6.
 tensorboardX  
 cupy  
 sklearn  
-Other common packages.  
+
+And [NVDIA's PyTorch container 23.10](https://docs.nvidia.com/deeplearning/frameworks/pytorch-release-notes/rel-23-10.html#rel-23-10)
 
 ## Prepare
 - Download the ped2 and avenue datasets.  
