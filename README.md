@@ -62,8 +62,6 @@ python train.py --dataset=avenue --show_flow
 ```Shell
 tensorboard --logdir=tensorboard_log/ped2_bs4
 ```
-![Example 1](contents/tensorboard.png)
-
 ## Evalution
 ```Shell
 # Validate with a trained model.
@@ -72,4 +70,3 @@ python evaluate.py --dataset=ped2 --trained_model=ped2_26000.pth
 # generated frame during evaluating. This drops fps.
 python evaluate.py --dataset=ped2 --trained_model=ped2_26000.pth --show_curve --show_heatmap
 ```
-![Example 2](contents/result.png)
